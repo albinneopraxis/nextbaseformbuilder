@@ -10,9 +10,10 @@ const app = express();
 
 // CORS configuration
 app.use((req, res, next) => {
-  res.setHeader('X-Frame-Options', 'ALLOW-FROM https://your-pegasus-domain.com');
+  res.setHeader('X-Frame-Options', 'ALLOW-FROM https://localhost:8000');
   next();
 });
+
 
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
