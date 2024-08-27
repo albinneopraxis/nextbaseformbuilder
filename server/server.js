@@ -10,7 +10,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:8000/a/test1/',
+  origin: 'http://localhost:8000/',
   methods: 'GET,POST,PUT,DELETE',
   allowedHeaders: 'Content-Type,Authorization',
 };
@@ -18,7 +18,7 @@ app.use(cors(corsOptions));
 
 // Security headers to allow embedding
 app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' http://localhost:8000/a/test1/");
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' http://localhost:8000/");
   next();
 });
 
