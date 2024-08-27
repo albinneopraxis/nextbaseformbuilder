@@ -18,7 +18,7 @@ app.use(cors(corsOptions));
 
 // Security headers to allow embedding
 app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://localhost:8000");
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' http://localhost:8000/a/test1/");
   next();
 });
 
