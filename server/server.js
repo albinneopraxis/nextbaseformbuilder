@@ -9,14 +9,20 @@ const fs = require('fs');
 const app = express();
 
 // CORS configuration
+const corsOptions = {
+  origin: 'https://localhost:8000', // Update with your SaaS Pegasus domain or other allowed origins
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+};
+app.use(cors(corsOptions));
+
+// Security headers to allow embedding
 app.use((req, res, next) => {
-  res.setHeader('X-Frame-Options', 'ALLOW-FROM https://localhost:8000');
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://localhost:8000");
   next();
 });
 
-
 app.use(bodyParser.json());
-app.use(cors(corsOptions));
 
 // Set up file storage with multer
 const storage = multer.diskStorage({
@@ -34,7 +40,9 @@ const upload = multer({ storage: storage });
 mongoose.connect('mongodb+srv://albinmathew:Albinkmathew@nextbase.c5n35.mongodb.net/?retryWrites=true&w=majority&appName=Nextbase', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch(error => console.error('MongoDB connection error:', error));
 
 // Define Schema and Model
 const formSchema = new mongoose.Schema({
