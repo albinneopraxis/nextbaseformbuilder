@@ -1,14 +1,22 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
+
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:8000', // Replace with your SaaS Pegasus domain
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+};
+
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Set up file storage with multer
 const storage = multer.diskStorage({
@@ -17,12 +25,12 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-  }
+  },
 });
 
 const upload = multer({ storage: storage });
 
-
+// Connect to MongoDB
 mongoose.connect('mongodb+srv://albinmathew:Albinkmathew@nextbase.c5n35.mongodb.net/?retryWrites=true&w=majority&appName=Nextbase', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -46,7 +54,6 @@ const formSchema = new mongoose.Schema({
 const Form = mongoose.model('Form', formSchema);
 
 // Ensure uploads directory exists
-const fs = require('fs');
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
@@ -68,7 +75,7 @@ app.post('/submit-form', upload.array('files'), async (req, res) => {
     state,
     country,
     termsAccepted,
-    name
+    name,
   });
 
   try {
@@ -79,25 +86,20 @@ app.post('/submit-form', upload.array('files'), async (req, res) => {
   }
 });
 
+// GET endpoint to fetch forms
+app.get('/form', async (req, res) => {
+  try {
+    const forms = await Form.find();
+    res.status(200).json(forms);
+  } catch (error) {
+    console.error('Error fetching forms:', error);
+    res.status(500).send('Error fetching forms: ' + error.message);
+  }
+});
+
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.listen(5000, () => {
   console.log('Server running on port 5000');
 });
-
-
-app.get('/form', async (req, res) => {
-    try {
-      const forms = await Form.find();
-      res.status(200).json(forms);
-    } catch (error) {
-      console.error('Error fetching forms:', error);
-      res.status(500).send('Error fetching forms: ' + error.message);
-    }
-  });
-
-
-  
-
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
