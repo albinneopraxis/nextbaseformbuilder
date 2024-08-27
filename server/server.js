@@ -9,11 +9,10 @@ const fs = require('fs');
 const app = express();
 
 // CORS configuration
-const corsOptions = {
-  origin: 'http://localhost:8000', // Replace with your SaaS Pegasus domain
-  methods: 'GET,POST,PUT,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
-};
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'ALLOW-FROM https://your-pegasus-domain.com');
+  next();
+});
 
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
