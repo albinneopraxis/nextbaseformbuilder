@@ -10,7 +10,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'https://localhost:8000', // Update with your SaaS Pegasus domain or other allowed origins
+  origin: 'http://localhost:8000/a/test1/',
   methods: 'GET,POST,PUT,DELETE',
   allowedHeaders: 'Content-Type,Authorization',
 };
